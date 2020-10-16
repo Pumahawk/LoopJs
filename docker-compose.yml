@@ -1,0 +1,11 @@
+version: "3"
+services:
+    node:
+        image: node
+        entrypoint: /bin/sleep
+        command: 99999d
+        working_dir: /app
+        ports:
+            - 3000:3000
+        volumes:
+            - .:/app
