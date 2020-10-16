@@ -1,9 +1,10 @@
-let AppController = require('../controllers/app.controller');
+const appController = require('../controllers/app.controller');
+let AppController = require('../controllers/app.controller').AppController;
 
 let routes = [
 	{
 		path: /.*/,
-		controller: AppController.home
+		controller: AppController().home
 	}
 ];
 

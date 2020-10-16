@@ -4,9 +4,11 @@ const routers = require('./src/router');
 const port = '3000';
 
 const server = http.createServer((req, res) => {
-	res.statusCode = 200;
-	res.setHeader('Content-type', 'text/plain');
-	res.end('Hello, world!');
+	try {
+		routers.routes.find(r => req.url.match(r.path)).controller(req, res);
+	} catch (error) {
+		console.error("Exception", error);
+	}
 });
 
 server.listen(port, () => {
