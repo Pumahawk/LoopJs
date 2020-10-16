@@ -1,4 +1,5 @@
 const http = require('http');
+const routers = require('./src/router');
 
 const port = '3000';
 
