@@ -48,3 +48,34 @@ t('requestServerManagerTest', function () {
     assert.deepEqual(results1, routers1);
 
 });
+
+t('instanceController', function () {
+
+    let voidAction = () => {};
+
+    let expected = {
+        call: 1,
+        instance: [
+            { path: /^\/$/, controller: voidAction },
+        ],
+    }
+
+    let result = {
+        call: 0,
+        instance:  [
+            { path: /^\/$/, controller: voidAction },
+        ],
+    }
+
+    function controller() {
+        result.call += 1;
+        return [
+            { path: /^\/$/, controller: voidAction },
+        ];
+    }
+
+    result.instance = apputils.instanceController(controller);
+
+    assert.deepEqual(result, expected);
+    
+});

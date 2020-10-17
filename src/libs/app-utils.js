@@ -40,4 +40,5 @@ function getInjectable(k) {
 module.exports = {
     requestServerManager,
     extractRoutersFromControllers,
+    instanceController,
 };
