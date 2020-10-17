@@ -9,4 +9,6 @@ function NotFoundController() {
     return [{ path: /.*/, controller: ({req, res}) => {res.statusCode = 404; res.end();}}]
 }
 
-module.exports = controllers;
+module.exports = {
+	controllers,
+};

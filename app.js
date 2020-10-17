@@ -1,7 +1,9 @@
 const http = require('http');
 const apputils = require('./src/libs/app-utils')
 
-const controllers = require('./app.router');
+const {
+	controllers,
+} = require('./app.module');
 
 const configuration = {
 	port: '3000',
