@@ -32,6 +32,10 @@ t('requestServerManagerTest', function () {
         controller1,
         controller2,
     ];
+
+    const module1 = {
+        controllers: controllers1
+    }
     
     const routers1 = [
         {
@@ -43,8 +47,7 @@ t('requestServerManagerTest', function () {
             controller: controller_map2,
         },
     ];
-    
-    const results1 = apputils.extractRoutersFromControllers(controllers1);
+    const results1 = apputils.extractRoutersFromModule(module1);
     assert.deepEqual(results1, routers1);
 
 });
@@ -78,4 +81,26 @@ t('instanceController', function () {
 
     assert.deepEqual(result, expected);
     
+});
+
+t('instanceController, whith inject', function() {
+
+    let exec = false;
+
+    firstinject.$name = 'firstinject'
+    function firstinject() {}
+
+    controller.$inject = ['firstinject'];
+    function controller(value) {
+        exec = true;
+        assert.equal(value, firstinject);
+    }
+
+    let injectList = [
+        firstinject,
+    ];
+
+    apputils.instanceController(controller, injectList)
+
+    assert.ok(exec);
 });

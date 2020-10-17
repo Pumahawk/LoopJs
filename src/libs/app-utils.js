@@ -1,12 +1,12 @@
-function extractRoutersFromControllers(controllers) {
-    return controllers.reduce((obj, c) => obj.concat(instanceController(c)), []);
+function extractRoutersFromModule(module) {
+    return module.controllers.reduce((obj, c) => obj.concat(instanceController(c, module.injectables)), []);
 }
 
-function requestServerManager({getControllers, getConsole, exceptionHandler}) {
+function requestServerManager({getModule, getConsole, exceptionHandler}) {
 
     const aconsole = getConsole();
-    const controllers = getControllers();
-    const routers = extractRoutersFromControllers(controllers);
+    const controllers = getModule();
+    const routers = extractRoutersFromModule(controllers);
 
     return (req, res) => {
         try {
@@ -28,17 +28,18 @@ function requestServerManager({getControllers, getConsole, exceptionHandler}) {
     }
 }
 
-function instanceController(controller) {
-	let i = controller.$inject !== undefined ? controller.$inject.map(i => getInjectable(k)) : undefined;
+function instanceController(controller, injectables) {
+	let i = controller.$inject !== undefined ? controller.$inject.map(i => getInjectable(i, injectables)) : undefined;
 	return controller.apply(null, i);
 }
 
-function getInjectable(k) {
-	return undefined;
+function getInjectable(k, injectables) {
+    return injectables !== undefined ? injectables.find(i => i.$name === k) : undefined;
 }
 
 module.exports = {
     requestServerManager,
-    extractRoutersFromControllers,
+    extractRoutersFromModule,
     instanceController,
+    getInjectable,
 };

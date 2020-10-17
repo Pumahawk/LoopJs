@@ -1,9 +1,7 @@
 const http = require('http');
 const apputils = require('./src/libs/app-utils')
 
-const {
-	controllers,
-} = require('./app.module');
+const module = require('./app.module');
 
 const configuration = {
 	port: '3000',
@@ -11,7 +9,7 @@ const configuration = {
 
 const server = http.createServer(
 	apputils.requestServerManager({
-		getControllers: () => controllers,
+		getModule: () => module,
 		getConsole: () => console,
 		exceptionHandler,
 	})

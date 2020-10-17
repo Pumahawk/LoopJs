@@ -26,6 +26,7 @@ console.log('Tests KO: ' + counterKO);
 if (infoUnitKO.length > 0) {
     console.log('\nFailed tests:');
     infoUnitKO.forEach(info => console.log(info.name));
+    process.exit(1);
 }
 
 
