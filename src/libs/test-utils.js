@@ -5,10 +5,12 @@ module.exports = {
 
 function init({name}, mod) {
     if (mod.exports === undefined) {
-        mod.exports = {
-            name,
-        };
+        mod.exports = {};
     }
+
+    mod.exports = Object.assign(mod.exports, {
+        name,
+    });
 
     if (typeof mod.exports.units === 'undefined') {
         mod.exports.units = [];

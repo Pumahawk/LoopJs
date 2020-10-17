@@ -1,5 +1,6 @@
 const testModules = [
     require('./app-utils.test'),
+    require('./test-utils.test'),
 ];
 
 let counterOK = 0;
