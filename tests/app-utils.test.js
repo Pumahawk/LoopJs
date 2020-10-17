@@ -210,6 +210,7 @@ t('instanceInjectableWithDependences', function() {
 t('instanceInjectableWithMultipleDependences', function() {
     let inj3Count = 0;
     let inj4Count = 0;
+    let inj5Count = 0;
     let j1 = createInject('inj1');
     let j2 = createInject('inj2');
 
@@ -229,6 +230,16 @@ t('instanceInjectableWithMultipleDependences', function() {
     });
     j4.inj.$inject = ['inj3', 'inj1'];
 
+    let j5 = createInject('inj5', (dj3, dj1, dj2, dj4) => {
+        assert.equal(dj3, 'inj3solved');
+        assert.equal(dj1, 'inj1solved');
+        assert.equal(dj2, 'inj2solved');
+        assert.equal(dj4, 'inj4solved');
+        inj5Count++;
+        return 'inj5solved';
+    });
+    j5.inj.$inject = ['inj3', 'inj1', 'inj2', 'inj4'];
+
     let inj = [
         j1.inj,
         j2.inj,
@@ -241,6 +252,11 @@ t('instanceInjectableWithMultipleDependences', function() {
     let result = apputils.instanceInjectable(j4.inj, inj, solved);
     
     assert.equal(result, 'inj4solved');
+    assert.equal(1, j1.count());
+    assert.equal(1, j2.count());
+    assert.equal(1, inj3Count);
+    assert.equal(1, inj4Count);
+    assert.equal(0, inj5Count);
     assert.deepEqual(solved, [
         { $name: 'inj1', value: 'inj1solved'},
         { $name: 'inj2', value: 'inj2solved'},
@@ -248,5 +264,20 @@ t('instanceInjectableWithMultipleDependences', function() {
         { $name: 'inj4', value: 'inj4solved'},
     ]);
 
+    
+    let result2 = apputils.instanceInjectable(j5.inj, inj, solved);
 
+    assert.equal(result2, 'inj5solved');
+    assert.equal(1, j1.count());
+    assert.equal(1, j2.count());
+    assert.equal(1, inj3Count);
+    assert.equal(1, inj4Count);
+    assert.equal(1, inj5Count);
+    assert.deepEqual(solved, [
+        { $name: 'inj1', value: 'inj1solved'},
+        { $name: 'inj2', value: 'inj2solved'},
+        { $name: 'inj3', value: 'inj3solved'},
+        { $name: 'inj4', value: 'inj4solved'},
+        { $name: 'inj5', value: 'inj5solved'},
+    ]);
 });
