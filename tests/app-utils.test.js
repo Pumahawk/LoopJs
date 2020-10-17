@@ -6,14 +6,14 @@ const t = testutils.init({
     name: 'app-utils'
 }, module);
 
-function createInject(name) {
+function createInject(name, inj) {
     
-    inj.$name = name;
-    let injCount = 0;
-    function inj() {
+    inj = inj ? inj : () =>  {
         injCount++;
         return name + 'solved';
     };
+    inj.$name = name;
+    let injCount = 0;
 
     return {
         inj,
@@ -156,5 +156,53 @@ t('instanceInjectableNoDependences', function() {
     let result = apputils.instanceInjectable(j1.inj, inj, solved);
     assert.equal(result, 'inj1solved');
     assert.equal(1, j1.count());
+    assert.deepEqual(solved, [{ $name: 'inj1', value: 'inj1solved'}]);
+});
+
+t('instanceMultipleInjectableNoDependences', function() {
+    let j1 = createInject('inj1');
+    let j2 = createInject('inj2');
+
+    let inj = [
+        j1.inj,
+        j2.inj,
+    ];
+
+    let solved = [];
+
+    let result = apputils.instanceInjectable(j1.inj, inj, solved);
+    assert.equal(result, 'inj1solved');
+    assert.equal(1, j1.count());
+    assert.equal(0, j2.count());
     assert.deepEqual(solved, [{ $name: 'inj1', value: result}]);
+
+    let result2 = apputils.instanceInjectable(j2.inj, inj, solved);
+    assert.equal(result2, 'inj2solved');
+    assert.equal(1, j1.count());
+    assert.equal(1, j2.count());
+    assert.deepEqual(solved, [{ $name: 'inj1', value: 'inj1solved'}, { $name: 'inj2', value: 'inj2solved'}]);
+});
+
+
+t('instanceInjectableWithDependences', function() {
+    let j1 = createInject('inj1');
+    let j2Count = 0;
+    let j2 = createInject('inj2', inj1 => {
+        assert.equal(inj1, 'inj1solved');
+        j2Count++;
+        return 'inj2solved';
+    });
+    j2.inj.$inject = ['inj1'];
+    
+    let inj = [
+        j1.inj,
+        j2.inj,
+    ];
+
+    let solved = [];
+    let result = apputils.instanceInjectable(j2.inj, inj, solved);
+    assert.equal(result, 'inj2solved');
+    assert.equal(1, j1.count());
+    assert.equal(1, j2Count);
+    assert.deepEqual(solved, [{ $name: 'inj1', value: 'inj1solved'}, { $name: 'inj2', value: 'inj2solved'}]);
 });

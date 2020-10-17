@@ -43,18 +43,19 @@ function instanceInjectable(injectable, dependenceList, instanced) {
         solved = injectable();
     } else {
         let inj = injectable.$inject.map(iname => {
-            let {newdep, excludedep} = dependenceList.collect((obj, d) => {
+            let {newdep, excludedep} = dependenceList.reduce((obj, d) => {
                 if (d.$name === iname) {
                     obj.newdep = d;
                 } else {
-                    excludedep.push(d);
+                    obj.excludedep.push(d);
                 }
+                return obj;
             }, {
                 newdep: undefined,
                 excludedep: [],
             });
             return instanceInjectable(newdep, excludedep, instanced);
-        }).map(d => instanced.find(i => d.$name === i.$name));
+        });
         solved = injectable.apply(null, inj);
     }
     instanced.push({
