@@ -6,6 +6,21 @@ const t = testutils.init({
     name: 'app-utils'
 }, module);
 
+function createInject(name) {
+    
+    inj.$name = name;
+    let injCount = 0;
+    function inj() {
+        injCount++;
+        return name + 'solved';
+    };
+
+    return {
+        inj,
+        count: () => injCount,
+    }
+}
+
 t('requestServerManagerTest', function () {
     
     function controller_map1() {}
@@ -127,4 +142,19 @@ t('getInjectable', function() {
     let result2 = apputils.getInjectable('injectable2', injectableList);
     assert.equal(result2, injectable2);
 
+});
+
+t('instanceInjectableNoDependences', function() {
+    let j1 = createInject('inj1');
+
+    let inj = [
+        j1.inj,
+    ];
+
+    let solved = [];
+
+    let result = apputils.instanceInjectable(j1.inj, inj, solved);
+    assert.equal(result, 'inj1solved');
+    assert.equal(1, j1.count());
+    assert.deepEqual(solved, [{ $name: 'inj1', value: result}]);
 });
