@@ -8,8 +8,6 @@ function AppController() {
 		res.statusCode = 200;
 		res.setHeader('Content-type', 'text/plain');
 		res.end('Hello, world!');
-
-		console.log(match);
 	}
 
 }

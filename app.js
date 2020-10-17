@@ -10,6 +10,7 @@ const server = http.createServer((req, res) => {
 		let match = undefined;
 		routers.find(r => {
 			match = req.url.match(r.path);
+			return !!match;
 		}).controller({
 			req,
 			res,
