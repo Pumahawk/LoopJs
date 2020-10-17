@@ -1,3 +1,4 @@
+module.exports = AppController
 function AppController() {
 
 	return [
@@ -11,5 +12,3 @@ function AppController() {
 	}
 
 }
-
-module.exports = AppController
