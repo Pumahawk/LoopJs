@@ -37,11 +37,12 @@ function getInjectable(k, injectables) {
     return injectables !== undefined ? injectables.find(i => i.$name === k) : undefined;
 }
 
-function instanceInjectable(injectable, dependenceList, instanced) {
+function instanceInjectable(injectable, dependenceList = [], instanced = [], toSolve = []) {
     let solved = undefined;
     if (injectable.$inject === undefined) {
         solved = injectable();
     } else {
+        toSolve.push(injectable.$name);
         let inj = injectable.$inject.map(iname => {
             let inInstanced = instanced.find(x => x.$name === iname);
             if (inInstanced !== undefined) {
@@ -58,11 +59,18 @@ function instanceInjectable(injectable, dependenceList, instanced) {
                     newdep: undefined,
                     excludedep: [],
                 });
-                return instanceInjectable(newdep, excludedep, instanced);
+                if (newdep === undefined) {
+                    let errorId = (toSolve.some(x => x === iname)) ? 'circularInjection' : 'injectionNotFound';
+                    const error = new Error('Unable to inject dependence');
+                    error.id = errorId;
+                    throw error;
+                }
+                return instanceInjectable(newdep, excludedep, instanced, toSolve);
             }
         });
         solved = injectable.apply(null, inj);
     }
+    toSolve = toSolve.filter(x => x !== injectable.$name);
     if (instanced.find(x => x.$name === injectable.$name) === undefined) {
         instanced.push({
             $name: injectable.$name, 

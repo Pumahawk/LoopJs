@@ -281,3 +281,27 @@ t('instanceInjectableWithMultipleDependences', function() {
         { $name: 'inj5', value: 'inj5solved'},
     ]);
 });
+
+t('instanceInjectableWithCircularDependences', function() {
+    let j1 = createInject('inj1');
+    j1.inj.$inject = ['inj3'];
+    let j2 = createInject('inj2');
+    j2.inj.$inject = ['inj1'];
+    let j3 = createInject('inj3');
+    j3.inj.$inject = ['inj2'];
+
+    let inj = [
+        j1,
+        j2,
+        j3,
+    ];
+
+    let solved = [];
+
+    assert.throws(() => apputils.instanceInjectable(j3.inj, inj, solved),
+    error => {
+        assert.equal(error.id, 'circularInjection');
+        return true;
+    });
+
+});
