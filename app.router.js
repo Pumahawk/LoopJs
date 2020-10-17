@@ -6,7 +6,7 @@ const controllers = [
 ];
 
 function NotFoundController() {
-    return [{ path: /.*/, controller: (req, res) => {res.statusCode = 404; res.end();}}]
+    return [{ path: /.*/, controller: ({req, res}) => {res.statusCode = 404; res.end();}}]
 }
 
 module.exports = controllers;

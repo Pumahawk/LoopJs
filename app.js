@@ -7,9 +7,13 @@ const port = '3000';
 
 const server = http.createServer((req, res) => {
 	try {
-		routers.find(r => req.url.match(r.path)).controller({
+		let match = undefined;
+		routers.find(r => {
+			match = req.url.match(r.path);
+		}).controller({
 			req,
 			res,
+			match,
 		});
 	} catch (error) {
 		console.error("Exception", error);

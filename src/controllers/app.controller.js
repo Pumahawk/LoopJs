@@ -4,10 +4,12 @@ function AppController() {
 		{ path: /^\/$/, controller: home },
 	];
 	
-	function home({req, res}) {
+	function home({req, res, match}) {
 		res.statusCode = 200;
 		res.setHeader('Content-type', 'text/plain');
 		res.end('Hello, world!');
+
+		console.log(match);
 	}
 
 }
