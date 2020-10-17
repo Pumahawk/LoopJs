@@ -1,17 +1,12 @@
 const apputils = require('../src/libs/app-utils');
+const testutils = require('../src/libs/test-utils');
 const assert = require('assert');
 
-module.exports = {
-    name: 'app-utils',
-    units: [
-        {
-            name: 'requestServerManager',
-            action: requestServerManagerTest,
-        },
-    ]
-}
+const t = testutils.init({
+    name: 'app-utils'
+}, module);
 
-function requestServerManagerTest() {
+t('requestServerManagerTest', function () {
     
     function controller_map1() {}
     function controller_map2() {}
@@ -52,4 +47,4 @@ function requestServerManagerTest() {
     const results1 = apputils.extractRoutersFromControllers(controllers1);
     assert.deepEqual(results1, routers1);
 
-}
+});
