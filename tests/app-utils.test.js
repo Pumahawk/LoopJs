@@ -89,18 +89,42 @@ t('instanceController, whith inject', function() {
 
     firstinject.$name = 'firstinject'
     function firstinject() {}
+    secondinject.$name = 'secondinject'
+    function secondinject() {}
 
-    controller.$inject = ['firstinject'];
-    function controller(value) {
+    controller.$inject = ['firstinject', 'secondinject'];
+    function controller(fi1, fi2, fi3) {
         exec = true;
-        assert.equal(value, firstinject);
+        assert.equal(fi1, firstinject);
+        assert.equal(fi2, secondinject);
+        assert.equal(fi3, undefined);
     }
 
     let injectList = [
         firstinject,
+        secondinject,
     ];
 
     apputils.instanceController(controller, injectList)
 
     assert.ok(exec);
+});
+
+t('getInjectable', function() {
+    
+    injectable1.$name = 'injectable1';
+    function injectable1(){};
+    injectable2.$name = 'injectable2';
+    function injectable2(){};
+
+    let injectableList = [
+        injectable1,
+        injectable2,
+    ];
+
+    let result1 = apputils.getInjectable('injectable1', injectableList);
+    assert.equal(result1, injectable1);
+    let result2 = apputils.getInjectable('injectable2', injectableList);
+    assert.equal(result2, injectable2);
+
 });
