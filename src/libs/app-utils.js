@@ -43,25 +43,32 @@ function instanceInjectable(injectable, dependenceList, instanced) {
         solved = injectable();
     } else {
         let inj = injectable.$inject.map(iname => {
-            let {newdep, excludedep} = dependenceList.reduce((obj, d) => {
-                if (d.$name === iname) {
-                    obj.newdep = d;
-                } else {
-                    obj.excludedep.push(d);
-                }
-                return obj;
-            }, {
-                newdep: undefined,
-                excludedep: [],
-            });
-            return instanceInjectable(newdep, excludedep, instanced);
+            let inInstanced = instanced.find(x => x.$name === iname);
+            if (inInstanced !== undefined) {
+                return inInstanced.value;
+            } else {
+                let {newdep, excludedep} = dependenceList.reduce((obj, d) => {
+                    if (d.$name === iname) {
+                        obj.newdep = d;
+                    } else {
+                        obj.excludedep.push(d);
+                    }
+                    return obj;
+                }, {
+                    newdep: undefined,
+                    excludedep: [],
+                });
+                return instanceInjectable(newdep, excludedep, instanced);
+            }
         });
         solved = injectable.apply(null, inj);
     }
-    instanced.push({
-        $name: injectable.$name, 
-        value: solved
-    });
+    if (instanced.find(x => x.$name === injectable.$name) === undefined) {
+        instanced.push({
+            $name: injectable.$name, 
+            value: solved
+        });
+    }
     return solved;
 
 }
