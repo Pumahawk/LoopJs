@@ -103,15 +103,15 @@ t('instanceController, whith inject', function() {
     let exec = false;
 
     firstinject.$name = 'firstinject'
-    function firstinject() {}
+    function firstinject() {return 'i1'}
     secondinject.$name = 'secondinject'
-    function secondinject() {}
+    function secondinject() {return 'i2'}
 
     controller.$inject = ['firstinject', 'secondinject'];
     function controller(fi1, fi2, fi3) {
         exec = true;
-        assert.equal(fi1, firstinject);
-        assert.equal(fi2, secondinject);
+        assert.equal(fi1, 'i1');
+        assert.equal(fi2, 'i2');
         assert.equal(fi3, undefined);
     }
 

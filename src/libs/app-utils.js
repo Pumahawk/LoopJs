@@ -29,7 +29,7 @@ function requestServerManager({getModule, getConsole, exceptionHandler}) {
 }
 
 function instanceController(controller, injectables) {
-	let i = controller.$inject !== undefined ? controller.$inject.map(i => getInjectable(i, injectables)) : undefined;
+	let i = controller.$inject !== undefined ? controller.$inject.map(i => instanceInjectable(getInjectable(i, injectables), injectables)) : undefined;
 	return controller.apply(null, i);
 }
 
