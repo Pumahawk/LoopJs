@@ -1,5 +1,6 @@
 module.exports = AppController
-function AppController() {
+AppController.$inject = ['appService'];
+function AppController(appService) {
 
 	return [
 		{ path: /^\/$/, controller: home },
@@ -8,7 +9,7 @@ function AppController() {
 	function home({req, res, match}) {
 		res.statusCode = 200;
 		res.setHeader('Content-type', 'text/plain');
-		res.end('Hello, world!');
+		res.end(appService.message);
 	}
 
 }

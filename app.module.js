@@ -1,8 +1,13 @@
 const AppController = require('./src/controllers/app.controller');
+const AppService = require('./src/services/app.service');
 
 const controllers = [
 	AppController,
 	NotFoundController,
+];
+
+const injectables = [
+	AppService,
 ];
 
 function NotFoundController() {
@@ -11,4 +16,5 @@ function NotFoundController() {
 
 module.exports = {
 	controllers,
+	injectables,
 };
