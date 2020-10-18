@@ -31,6 +31,9 @@ function requestServerManager({getModule, getConsole, exceptionHandler}) {
 function solverRequestWithRouter(router) {
 
     return (req) => {
+        if (router.method !== undefined && router.method.toUpperCase() !== req.method.toUpperCase()) {
+            return false;
+        }
         let founded = false;
         match = req.url.match(router.path);
         founded = !!match;

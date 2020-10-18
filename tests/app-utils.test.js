@@ -21,6 +21,16 @@ function createInject(name, inj) {
     }
 }
 
+function mockupMatch({match, groups, index, input}) {
+    let match1 = match.reduce((obj, v) => obj.concat(v), []);
+    match1.groups = groups;
+    match1.index = index;
+    match1.input = input;
+    return {
+        match: match1,
+    };
+}
+
 t('solverRequestWithRouter', function () {
     let req1 = { url : 'prefix_test1_request'}
     function controller(){}
@@ -37,6 +47,34 @@ t('solverRequestWithRouter', function () {
     let req2 = { url : 'prefix_not_request' }
     let res2 = solver(req2);
     assert.equal(res2, false);
+
+});
+
+t('solverRequestWithRouterWhithMethod', function() {
+    function controller(){}
+
+    let router1 = { method: 'get', path: /^t1/, controller};
+    let router2 = { method: 'post', path: /^t2/, controller};
+
+    let r = (m, u) => ({method: m, url: u});
+
+    let s1 = apputils.solverRequestWithRouter(router1);
+    let res1 = s1(r('get', 't1'));
+    let res2 = s1(r('post', 't1'));
+    let res6 = s1(r('get', 't2'));
+
+    assert.deepEqual(res1, mockupMatch({match: ['t1'], index: 0, input: 't1'}));
+    assert.equal(res2, false);
+    assert.equal(res6, false);
+
+    let s2 = apputils.solverRequestWithRouter(router2);
+    let res3 = s2(r('get', 't2'));
+    let res4 = s2(r('post', 't2'));
+    let res5 = s2(r('post', 't1'));
+
+    assert.equal(res3, false);
+    assert.deepEqual(res4, mockupMatch({match: ['t2'], index: 0, input: 't2'}));
+    assert.equal(res5, false);
 
 });
 
