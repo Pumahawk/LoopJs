@@ -21,6 +21,25 @@ function createInject(name, inj) {
     }
 }
 
+t('solverRequestWithRouter', function () {
+    let req1 = { url : 'prefix_test1_request'}
+    function controller(){}
+    let router1 = { path: /test/, controller};
+    let solver = apputils.solverRequestWithRouter(router1);
+
+    let res1 = solver(req1);
+    let match1 = ['test'];
+    match1.groups = undefined;
+    match1.index = 7;
+    match1.input = 'prefix_test1_request';
+    assert.deepEqual(res1.match, match1);
+
+    let req2 = { url : 'prefix_not_request' }
+    let res2 = solver(req2);
+    assert.equal(res2, false);
+
+});
+
 t('requestServerManagerTest', function () {
     
     function controller_map1() {}

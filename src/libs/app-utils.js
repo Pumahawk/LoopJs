@@ -10,14 +10,14 @@ function requestServerManager({getModule, getConsole, exceptionHandler}) {
 
     return (req, res) => {
         try {
-            let match = undefined;
+            info = undefined;
             routers.find(r => {
-                match = req.url.match(r.path);
-                return !!match;
+                info = solverRequestWithRouter(r)(req);
+                return info != false
             }).controller({
                 req,
                 res,
-                match,
+                match: info.match,
             });
         } catch (error) {
             exceptionHandler({
@@ -25,6 +25,19 @@ function requestServerManager({getModule, getConsole, exceptionHandler}) {
                 res,
             }, error);
         }
+    }
+}
+
+function solverRequestWithRouter(router) {
+
+    return (req) => {
+        let founded = false;
+        match = req.url.match(router.path);
+        founded = !!match;
+    
+        return !founded ? false : {
+            match,
+        };
     }
 }
 
@@ -87,4 +100,5 @@ module.exports = {
     instanceController,
     getInjectable,
     instanceInjectable,
+    solverRequestWithRouter,
 };
