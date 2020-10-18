@@ -291,17 +291,26 @@ t('instanceInjectableWithCircularDependences', function() {
     j3.inj.$inject = ['inj2'];
 
     let inj = [
-        j1,
-        j2,
-        j3,
+        j1.inj,
+        j2.inj,
+        j3.inj,
     ];
 
-    let solved = [];
+    assert.throws(() => apputils.instanceInjectable(j3.inj, inj), error => error.id === 'circularInjection');
 
-    assert.throws(() => apputils.instanceInjectable(j3.inj, inj, solved),
-    error => {
-        assert.equal(error.id, 'circularInjection');
-        return true;
-    });
+});
 
+t('injectionNotFound', function() {
+    
+    let j1 = createInject('inj1');
+    j1.inj.$inject = ['inj3'];
+    let j2 = createInject('inj2');
+    j2.inj.$inject = ['inj1'];
+
+    let inj = [
+        j1,
+        j2,
+    ];
+
+    assert.throws(() => apputils.instanceInjectable(j2.inj, inj), error => error.id === 'injectionNotFound');
 });
