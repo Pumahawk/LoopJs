@@ -1,5 +1,7 @@
 module.exports = {
     init,
+    initIndex,
+    joinMultipleUnitTestModule,
 };
 
 
@@ -19,4 +21,15 @@ function init({name}, mod) {
         name,
         action: unitTest,
     });
+}
+
+function initIndex({name, tests}, mod) {
+    mod.exports = joinMultipleUnitTestModule(name, tests);
+}
+
+function joinMultipleUnitTestModule(name, uniTestList) {
+    return uniTestList.reduce(function(obj, t) {
+        (t.units != undefined ? t.units : []).forEach(u => obj.units.push({name: t.name + '.' + u.name, action: u.action}))
+        return obj;
+    }, { name: name, units: [] });
 }
