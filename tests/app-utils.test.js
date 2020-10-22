@@ -149,7 +149,7 @@ t('instanceController', function () {
         ];
     }
 
-    result.instance = apputils.instanceController(controller);
+    result.instance = apputils.instanceController(controller, [], [], []);
 
     assert.deepEqual(result, expected);
     
@@ -177,7 +177,7 @@ t('instanceController, whith inject', function() {
         secondinject,
     ];
 
-    apputils.instanceController(controller, injectList)
+    apputils.instanceController(controller, injectList, [], [])
 
     assert.ok(exec);
 });
@@ -210,7 +210,7 @@ t('instanceInjectableNoDependences', function() {
 
     let solved = [];
 
-    let result = apputils.instanceInjectable(j1.inj, inj, solved);
+    let result = apputils.instanceInjectable(j1.inj, inj, solved, []);
     assert.equal(result, 'inj1solved');
     assert.equal(1, j1.count());
     assert.deepEqual(solved, [{ $name: 'inj1', value: 'inj1solved'}]);
@@ -227,13 +227,13 @@ t('instanceMultipleInjectableNoDependences', function() {
 
     let solved = [];
 
-    let result = apputils.instanceInjectable(j1.inj, inj, solved);
+    let result = apputils.instanceInjectable(j1.inj, inj, solved, []);
     assert.equal(result, 'inj1solved');
     assert.equal(1, j1.count());
     assert.equal(0, j2.count());
     assert.deepEqual(solved, [{ $name: 'inj1', value: result}]);
 
-    let result2 = apputils.instanceInjectable(j2.inj, inj, solved);
+    let result2 = apputils.instanceInjectable(j2.inj, inj, solved, []);
     assert.equal(result2, 'inj2solved');
     assert.equal(1, j1.count());
     assert.equal(1, j2.count());
@@ -257,7 +257,7 @@ t('instanceInjectableWithDependences', function() {
     ];
 
     let solved = [];
-    let result = apputils.instanceInjectable(j2.inj, inj, solved);
+    let result = apputils.instanceInjectable(j2.inj, inj, solved, []);
     assert.equal(result, 'inj2solved');
     assert.equal(1, j1.count());
     assert.equal(1, j2Count);
@@ -306,7 +306,7 @@ t('instanceInjectableWithMultipleDependences', function() {
 
     let solved = [];
 
-    let result = apputils.instanceInjectable(j4.inj, inj, solved);
+    let result = apputils.instanceInjectable(j4.inj, inj, solved, []);
     
     assert.equal(result, 'inj4solved');
     assert.equal(1, j1.count());
@@ -322,7 +322,7 @@ t('instanceInjectableWithMultipleDependences', function() {
     ]);
 
     
-    let result2 = apputils.instanceInjectable(j5.inj, inj, solved);
+    let result2 = apputils.instanceInjectable(j5.inj, inj, solved, []);
 
     assert.equal(result2, 'inj5solved');
     assert.equal(1, j1.count());
@@ -353,7 +353,7 @@ t('instanceInjectableWithCircularDependences', function() {
         j3.inj,
     ];
 
-    assert.throws(() => apputils.instanceInjectable(j3.inj, inj), error => error.id === 'circularInjection');
+    assert.throws(() => apputils.instanceInjectable(j3.inj, inj, [], []), error => error.id === 'circularInjection');
 
 });
 
@@ -369,5 +369,5 @@ t('injectionNotFound', function() {
         j2,
     ];
 
-    assert.throws(() => apputils.instanceInjectable(j2.inj, inj), error => error.id === 'injectionNotFound');
+    assert.throws(() => apputils.instanceInjectable(j2.inj, inj, [], []), error => error.id === 'injectionNotFound');
 });
