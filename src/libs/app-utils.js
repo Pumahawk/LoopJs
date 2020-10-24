@@ -1,5 +1,7 @@
 function extractRoutersFromModule(module) {
-    return module.controllers.reduce((obj, c) => obj.concat(instanceController(c, module.injectables)), []);
+    let instanced = [];
+    let toSolve = [];
+    return module.controllers.reduce((obj, c) => obj.concat(instanceController(c, module.injectables, instanced, toSolve)), []);
 }
 
 function requestServerManager({getModule, getConsole, exceptionHandler}) {
@@ -44,8 +46,8 @@ function solverRequestWithRouter(router) {
     }
 }
 
-function instanceController(controller, injectables) {
-	let i = controller.$inject !== undefined ? controller.$inject.map(i => instanceInjectable(getInjectable(i, injectables), injectables)) : undefined;
+function instanceController(controller, injectables, instanced, toSolve) {
+	let i = controller.$inject !== undefined ? controller.$inject.map(i => instanceInjectable(getInjectable(i, injectables), injectables, instanced, toSolve)) : undefined;
 	return controller.apply(null, i);
 }
 
@@ -53,10 +55,11 @@ function getInjectable(k, injectables) {
     return injectables !== undefined ? injectables.find(i => i.$name === k) : undefined;
 }
 
-function instanceInjectable(injectable, dependenceList = [], instanced = [], toSolve = []) {
+function instanceInjectable(injectable, dependenceList = [], instanced, toSolve) {
     let solved = undefined;
     if (injectable.$inject === undefined) {
-        solved = injectable();
+        let i = instanced.find(i => i.$name === injectable.$name);
+        solved = i !== undefined ? i.value : injectable();
     } else {
         toSolve.push(injectable.$name);
         let inj = injectable.$inject.map(iname => {

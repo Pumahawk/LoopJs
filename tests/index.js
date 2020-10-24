@@ -1,6 +1,7 @@
 const testModules = [
     require('./app-utils.test'),
     require('./test-utils.test'),
+    require('./libs'),
 ];
 
 let counterOK = 0;
