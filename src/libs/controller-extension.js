@@ -2,15 +2,7 @@ module.exports = {
     reqExtBody,
     emux,
     reqExtBodyJSON,
-    pext,
 };
-
-function pext(controller) {
-    const ext = [
-        reqExtBodyJSON,
-    ];
-    return emux(ext)(controller);
-}
 
 function reqExtBody(type) {
     return controller => function(obj) {
