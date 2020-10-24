@@ -14,7 +14,7 @@ function reqExtBody(type) {
         req.on('end', () => {
             let bodyRequest = undefined
             if (type === 'json') {
-                bodyRequest = JSON.parse(data);
+                bodyRequest = data === '' ? undefined : JSON.parse(data);
             } else {
                 bodyRequest = data;
             }
